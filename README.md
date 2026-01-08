@@ -1,12 +1,12 @@
 # End-to-End Data Pipeline
 
-A complete data pipeline built with Prefect that ingests data from various formats (CSV, JSON, Excel, Parquet, XML), transforms it into a clean, normalized format, and outputs it in a friendly format for data analysis (Parquet by default).
+A complete data pipeline built with Prefect that ingests data from various formats (CSV, JSON, Excel, Parquet, XML), transforms it into a clean, normalized format, and outputs it in a friendly format for data analysis (CSV by default).
 
 ## Features
 
 - **Multi-format ingestion**: Supports CSV, JSON, Excel, Parquet, and basic XML files
-- **Data transformation**: Cleans data by removing duplicates, filling missing values, normalizing column names, and encoding categorical values to numerical
-- **Flexible output**: Outputs to Parquet, CSV, or JSON
+- **Data transformation**: Cleans data by removing duplicates, filling missing values, normalizing column names, and encoding categoricals (one-hot for >2 uniques, binary for ≤2)
+- **Flexible output**: Outputs to Parquet, CSV, or JSON (CSV by default)
 - **Orchestration**: Uses Prefect for workflow management
 - **Configurable**: Easily configure output formats and directories via YAML config
 
@@ -25,8 +25,8 @@ A complete data pipeline built with Prefect that ingests data from various forma
 ```python
 from src.pipeline import data_pipeline
 
-# Run the pipeline
-data_pipeline("path/to/your/data.csv")
+# Run the pipeline on a directory
+data_pipeline("path/to/input/directory")
 ```
 
 Or run directly:
@@ -39,6 +39,17 @@ python src/pipeline.py
 
 Edit `config/config.yaml` to change output format and directory.
 
+### Processing Logic
+
+- Scans the input directory for supported files (CSV, JSON, Excel, Parquet, XML).
+- For each file, checks if a processed version exists in `data/processed/`.
+- If not processed, ingests, transforms, and outputs to `data/processed/`.
+- Skips already processed files.
+
+### Example
+Input directory: `data/unprocessed/` with `input.csv`.  
+Output: `data/processed/input_processed.csv` (cleaned CSV with hybrid categorical encoding). Skips if already exists.
+
 ### Supported Input Formats
 
 - CSV
@@ -49,8 +60,8 @@ Edit `config/config.yaml` to change output format and directory.
 
 ### Output Formats
 
-- Parquet (default)
-- CSV
+- CSV (default)
+- Parquet
 - JSON
 
 ## Project Structure

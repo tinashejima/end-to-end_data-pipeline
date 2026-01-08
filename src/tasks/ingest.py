@@ -25,6 +25,18 @@ def detect_format(file_path: str) -> str:
         raise ValueError(f"Unsupported file format for {file_path}")
 
 @task
+def list_files(input_dir: str) -> list:
+    """
+    List all supported files in the input directory.
+    """
+    supported_exts = ['.csv', '.json', '.xlsx', '.xls', '.parquet', '.xml']
+    files = []
+    for file in os.listdir(input_dir):
+        if not file.startswith('.') and '~' not in file and os.path.splitext(file)[1].lower() in supported_exts:
+            files.append(os.path.join(input_dir, file))
+    return files
+
+@task
 def ingest_data(file_path: str, format_type: str) -> pd.DataFrame:
     """
     Ingest data from file into a pandas DataFrame.

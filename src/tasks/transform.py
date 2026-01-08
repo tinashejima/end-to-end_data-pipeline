@@ -1,7 +1,6 @@
 import pandas as pd
 from prefect import task
 import logging
-from sklearn.preprocessing import LabelEncoder
 
 logger = logging.getLogger(__name__)
 
@@ -28,10 +27,19 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
                 except:
                     pass
         
-        # Encode categorical columns (object type that are not datetime) to numerical
-        le = LabelEncoder()
-        for col in df.select_dtypes(include=['object']).columns:
-            df[col] = le.fit_transform(df[col].astype(str))
+        # Encode categorical columns
+        categorical_cols = [col for col in df.select_dtypes(include=['object']).columns]
+        for col in categorical_cols:
+            unique_vals = df[col].unique()
+            if len(unique_vals) > 2:
+                # One-hot encode
+                dummies = pd.get_dummies(df[col], prefix=col, drop_first=False).astype(int)
+                df = pd.concat([df.drop(col, axis=1), dummies], axis=1)
+            else:
+                # Binary encode: sort unique values and assign 0/1
+                sorted_vals = sorted(unique_vals)
+                mapping = {sorted_vals[0]: 0, sorted_vals[1]: 1} if len(unique_vals) == 2 else {unique_vals[0]: 0}
+                df[col] = df[col].map(mapping).astype(int)
         
         logger.info(f"Successfully transformed data, shape: {df.shape}")
         return df

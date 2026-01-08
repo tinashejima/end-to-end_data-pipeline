@@ -1,5 +1,5 @@
 pipeline:
-  output_format: parquet
+  output_format: csv
   output_dir: data/processed
 
 logging:
