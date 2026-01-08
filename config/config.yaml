@@ -1,0 +1,6 @@
+pipeline:
+  output_format: parquet
+  output_dir: data/processed
+
+logging:
+  level: INFO
