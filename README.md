@@ -33,6 +33,10 @@ Or run directly:
 
 ```bash
 python src/pipeline.py
+
+or 
+
+python3 -m src.pipeline
 ```
 
 ### Configuration
@@ -47,8 +51,8 @@ Edit `config/config.yaml` to change output format and directory.
 - Skips already processed files.
 
 ### Example
-Input directory: `data/unprocessed/` with `input.csv`.  
-Output: `data/processed/input_processed.csv` (cleaned CSV with hybrid categorical encoding). Skips if already exists.
+Input directory: `data/unprocessed/` with `{filename}.csv`.  
+Output: `data/processed/{filename}_processed.csv` (cleaned CSV with hybrid categorical encoding). Skips if already exists.
 
 ### Supported Input Formats
 

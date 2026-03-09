@@ -4,3 +4,4 @@ pyarrow>=10.0.0
 openpyxl>=3.0.0  # for Excel support
 lxml>=4.9.0  # for XML if needed
 griffe==0.30.0  # specific version for Prefect compatibility
+python-dotenv>=0.21.0  # for environment variable management
